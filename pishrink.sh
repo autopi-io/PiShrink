@@ -308,7 +308,38 @@ if [[ $prep == true ]]; then
   info "Syspreping: Removing logs, apt archives, dhcp leases and ssh hostkeys"
   mountdir=$(mktemp -d)
   mount "$loopback" "$mountdir"
+
+  echo "removing apt cache, dhcp leases, logs, /var/tmp/*, /tmp/*, /etc/ssh/*_host_*"
   rm -rf "$mountdir/var/cache/apt/archives/*" "$mountdir/var/lib/dhcpcd5/*" "$mountdir/var/log/*" "$mountdir/var/tmp/*" "$mountdir/tmp/*" "$mountdir/etc/ssh/*_host_*"
+
+  echo "resetting hostname to autopi-initial"
+  echo "autopi-initial" > "$mountdir/etc/hostname"
+
+  echo "removing /home/pi/.bash_history"
+  rm -vf "$moundir/home/pi/.bash_history"
+
+  echo "removing /root/.bash_history"
+  rm -vf "$mountdir/root/.bash_history"
+
+  echo "removing /var/log/salt/minion"
+  rm -vf "$mountdir/var/log/salt/minion"
+
+  echo "removing /etc/salt/minion.bak"
+  rm -vf "$mountdir/etc/salt/minion.bak"
+
+  echo "removing /var/cache/salt/minion/last_master_ip"
+  rm -vf "$mountdir/var/cache/salt/minion/last_master_ip"
+
+  echo "removing /etc/salt/minion.d/_schedule.conf"
+  rm -vf "$mountdir/etc/salt/minion.d/_schedule.conf"
+
+  echo "removing /etc/salt/pki/minion/"
+  rm -rvf "$mountdir/etc/salt/pki/minion/"
+
+  echo "removing /etc/salt/minion_id"
+  rm -vf "$mountdir/etc/salt/minion_id"
+
+  echo "Unmounting"
   umount "$mountdir"
 fi
 
